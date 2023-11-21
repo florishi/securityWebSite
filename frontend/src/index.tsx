@@ -53,7 +53,7 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 });
 
-console.log(RainbowKitProvider);
+// console.log(RainbowKitProvider);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

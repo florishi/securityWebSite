@@ -475,6 +475,16 @@ body {
     display: grid;
 }
 
+.sendWallet {
+    font-size: 30px;
+    display:flow-root;
+}
+
+.sendWallet input {
+    font-size: 30px;
+    width: 100vw;
+}
+
 @media only screen and (max-width: 1024px) {
     .img_block>div {
         display: block;
