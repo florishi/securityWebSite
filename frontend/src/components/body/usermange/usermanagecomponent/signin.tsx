@@ -15,6 +15,8 @@ import axios from "axios";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { useState, useEffect } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { Collapse, IconButton } from "@mui/material";
 
 const SigninBox = styled("form")(({ theme }) => ({
     position: "absolute",
@@ -43,12 +45,10 @@ const TIMEOUT = 30000; // 30 seconds
 
 const SignIn = () => {
     let logoutTimer: NodeJS.Timeout;
-    const [showAlert, setShowAlert] = useState(false);
-    const [closeAlert, setCloseAlert] = useState(false);
-
-    const handleCloseAlert = () => {
-        setShowAlert(false);
-    };
+    const [state, setState] = useState("")
+    const [status, setStatus] = useState("");
+    const [msg, setMsg] = useState("");
+    const [open, setOpen] = useState(false);
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().required('Email is required').email('Email is invalid'),
@@ -67,57 +67,29 @@ const SignIn = () => {
         },
     });
 
-    useEffect(() => {
-        setTimeout(() => {
-            setCloseAlert(true);
-        }, 10000);
-    }, [showAlert])
-
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
-
-    const resetLogoutTimer = () => {
-        clearTimeout(logoutTimer);
-        logoutTimer = setTimeout(() => {
-            setIsLoggedIn(false);
-        }, TIMEOUT);
-    };
-
-    const handleCloseLogout = () => {
-        setIsLoggedIn(true)
-    }
-
-    const handleUserAction = () => {
-        resetLogoutTimer();
-        // Perform the user action
-    };
-
-    useEffect(() => {
-        if (closeAlert === true) {
-            setIsLoggedIn(false)
-        }
-    }, [closeAlert])
-
-    useEffect(() => {
-        resetLogoutTimer();
-        return () => {
-            clearTimeout(logoutTimer);
-        };
-    }, []);
-
     const postKeyValue = () => {
         axios.post('http://localhost:4128/router/api/signin', formik.values)
             .then(res => {
-                if (res.data.success[0].isMatch == true) {
-                    setShowAlert(true);
-                    setIsLoggedIn(true)
-                    console.log(res.data.success[0].msg);
+                console.log(res.data);
+                setStatus(res.data.status);
+                setMsg(res.data.msg);
+                setOpen(true);
+                if (res.data.status === "success") {
+                    localStorage.setItem(
+                        "sessionStartTime",
+                        String(new Date().getTime())
+                    );
+                    localStorage.setItem("currentUser", res.data.token);
+                    setTimeout(() => (window.location.href = "/"), 4000);
+                } else {
+
                 }
             })
             .catch(error => console.log(error)
             )
     }
     return (
-        <div className="SignIn" style={{
+        <Box className="SignIn" style={{
             width: "100%",
             height: "100 %",
             backgroundImage: "url('/img/landing.png')",
@@ -126,23 +98,28 @@ const SignIn = () => {
         }}>
             <Userhead />
             <Box className="Firstpart">
-                <div style={{ top: "7vh", position: "absolute", right: "10px", width: "20vw" }}>
-                    {showAlert && (
-                        <Alert severity="success" onClose={handleCloseAlert} >
-                            <AlertTitle>Success</AlertTitle>
-                            Successfully SiginIn.
+                <Box style={{ top: "7vh", position: "absolute", right: "10px", width: "50vw" }}>
+                    <Collapse in={open}>
+                        <Alert action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setOpen(false);
+                                }}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                            sx={{ mb: 2 }}>
+                            <AlertTitle>{status}</AlertTitle>
+                            <strong>{msg}</strong>
                         </Alert>
-                    )}
-                    {isLoggedIn == false && (
-                        <Alert severity="error" onClose={handleCloseLogout}>
-                            <AlertTitle>Error</AlertTitle>
-                            Loged out.
-                        </Alert>
-
-                    )}
-                </div>
+                    </Collapse>
+                </Box>
                 <img />
-                <div className="Image-Cover">
+                <Box className="Image-Cover">
                     <SigninBox>
                         <Box
                             component="form"
@@ -256,9 +233,9 @@ const SignIn = () => {
                             </Box>
                         </Box>
                     </SigninBox>
-                </div>
+                </Box>
             </Box>
-        </div>
+        </Box>
     );
 };
 

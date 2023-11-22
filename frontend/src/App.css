@@ -58,6 +58,18 @@ body {
     py: 16px !important;
 }
 
+.css-2765gm {
+    color: black;
+    background-color: white;
+}
+
+.historyhead {
+    font-size: 36px;
+    padding-left: 1vw;
+    margin-bottom: 2px;
+    font-family: cursive;
+}
+
 @media only screen and (max-width: 900px) {
     .css-1qf7azp-MuiTypography-root {
         font-size: 1.5rem !important;
@@ -477,7 +489,7 @@ body {
 
 .sendWallet {
     font-size: 30px;
-    display:flow-root;
+    display: flow-root;
 }
 
 .sendWallet input {

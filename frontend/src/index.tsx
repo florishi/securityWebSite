@@ -42,7 +42,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: 'RainbowKit App',
-  projectId: 'YOUR_PROJECT_ID',
+  projectId: '676a5b8fbf0141f7901dc234f623b9fb',
   chains,
 });
 
@@ -53,8 +53,6 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 });
 
-// console.log(RainbowKitProvider);
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -62,10 +60,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider coolMode
+      <RainbowKitProvider
         modalSize="compact"
         theme={lightTheme()}
-        showRecentTransactions={false}
+        // showRecentTransactions={false}
         chains={chains} >
         <App />
       </RainbowKitProvider>
